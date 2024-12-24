@@ -1,0 +1,101 @@
+.box {
+  margin-bottom: 20px;
+}
+#email-campaign{
+  height: 275px;
+  align-content: center;
+}
+/*-------Dashbard-2----------*/
+.fc-toolbar h2 {
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 30px;
+}
+.fc-toolbar .fc-right {
+    float: none;
+    display: none !important;
+    margin: 10px 0;
+}
+.fc-toolbar .fc-center, .fc-toolbar .fc-left, .fc-toolbar .fc-right{
+    clear: none !important;
+}
+.revenue-box-chart{
+  height: 128.7px !important;
+}
+.scheduled-meeting{
+  height: 305.3px;
+}
+@media only screen and (max-width: 1366px) {
+  .scheduled-meeting{
+    height: 360px;
+  }
+}
+/*-------------*/
+
+/*-------Dashbard-3----------*/
+#chart-container{
+  height: 269px;
+}
+@media only screen and (max-width: 1440px) {
+  #chart-container{
+    height: 248px;
+  }
+}
+/*-------------*/
+
+.image-edubox{
+  height: 214px;
+}
+
+/*-------Dashbard-7----------*/
+.ecommerce-box #donut-chart{
+  height: 228px;
+}
+
+/*-------Dashbard-8----------*/
+.sales-chart-box{
+  height: 205px;
+}
+@media only screen and (max-width: 1366px) {
+  .sales-chart-box{
+    height: 250.2px;
+  }
+}
+
+/*-------dashboard-10--------*/
+.section-bx a .bx-dec {
+  display: none; }
+.section-bx a .section-dec {
+  position: absolute;
+  background-color: rgba(0, 135, 90, 0.9);
+  border-radius: 10px;
+  padding: 10px;
+  -webkit-box-shadow: 0 5px 15px 4px rgba(0, 135, 90, 0.25);
+  box-shadow: 0 5px 15px 4px rgba(0, 135, 90, 0.25);
+  margin-top: 20px;
+  margin-left: 20px;
+  z-index: 99; }
+  .section-bx a .section-dec img {
+    max-width: 100px;
+    margin-right: 10px;
+    padding: 10px;
+    background-color: #0ca773;
+    border-radius: 10px; }
+.section-bx a:hover {
+  background-color: #00875a !important;
+  -webkit-box-shadow: 0 5px 15px 4px rgba(0, 135, 90, 0.25);
+  box-shadow: 0 5px 15px 4px rgba(0, 135, 90, 0.25); }
+  .section-bx a:hover .bx-dec {
+    display: block; }
+
+
+/*-------dashboard-16--------*/
+#progressbar1 .progressbar-text, #progressbar2 .progressbar-text, #progressbar3 .progressbar-text {
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.0);
+  border-radius: 100%;
+  height: auto;
+  width: auto;
+  line-height: 115px;
+  }
+
+/*-------dashboard-17--------*/
