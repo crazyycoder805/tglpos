@@ -86,6 +86,7 @@ class Cashiers extends Controller
                     'batch_id' => 'nullable|string',
                     'cashier' => "nullable|string",
                     'total_service_tax_value' => "nullable|string",
+                    'pos_fee_tax' => "nullable|string",
 
                 ]);
 
@@ -116,6 +117,7 @@ class Cashiers extends Controller
                         "FurtherTax" => (float) $item->further_tax ?? 0.0,
                         "InvoiceType" => $item->invoice_type ?? 1,
                         "RefUSIN" => $item->ref_usin ?? null,
+
                     ];
                 }
 
@@ -128,12 +130,13 @@ class Cashiers extends Controller
                     "BuyerName" => $validated['customer_name'] ?? 'Unknown',
                     "BuyerPhoneNumber" => "0000-0000000",
                     "items" => $items, // Use the dynamically prepared items array
-                    "TotalBillAmount" => (float) $validated['total_amount_after_tax'] ?? 1.0,
+                    "TotalBillAmount" => (float) $validated['total_amount_after_tax'] + (float) $validated['pos_fee_tax'] ?? 1.0,
                     "TotalQuantity" => (float) $validated['total_qty'] ?? 1.0,
                     "TotalSaleValue" => (float) $validated['total_amount_before_tax'] ?? 1.0,
-                    "TotalTaxCharged" => (float) $validated['total_service_tax_value'] ?? 1.0,
+                    "TotalTaxCharged" => (float) $validated['pos_fee_tax'] ?? 1.0,
                     "PaymentMode" => 2,
                     "InvoiceType" => 1,
+                    "FurtherTax" => (float) $validated['pos_fee_tax']
                 ];
 
                 // Send the request to the external API

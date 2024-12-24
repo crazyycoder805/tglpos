@@ -43,7 +43,7 @@
         background-color: white !important;
         color: black !important;
         border: 1px solid black !important
-        /* Sets the text color to black */
+            /* Sets the text color to black */
 
     }
 
@@ -65,9 +65,18 @@
         background-color: white;
         color: black
     }
-    .dark-skin .select2-container--default .select2-selection--single { 
+
+    .dark-skin .select2-container--default .select2-selection--single {
         background-color: white;
 
+    }
+
+    .border-red {
+        border: 5px solid red !important
+    }
+
+    .border-black {
+        border: 1px solid black !important
     }
 </style>
 
@@ -459,7 +468,7 @@
             // Function to update Discounted Final Amount after applying discount
             function updateDiscountedFinalAmount() {
                 var discountPercentage = parseFloat(discount_in_percentage_input.val()) || 0;
-                discountedFinalAmount = totalAfterTaxAmount * (1 - discountPercentage / 100);
+                discountedFinalAmount = (totalAfterTaxAmount * (1 - discountPercentage / 100)) + 1;
                 discounted_final_amount_input.val(discountedFinalAmount.toFixed(2)); // Ensure proper formatting
                 updateChangeReturn(); // Update change return after discount
             }
@@ -770,7 +779,8 @@
             bill_close_button.on('click', function(event) {
                 event.preventDefault(); // Prevent default action
 
-                if (parseInt(amount_received_input.val()) < parseInt(discounted_final_amount_input.val())) {
+                if (parseFloat(amount_received_input.val()) < parseFloat(discounted_final_amount_input
+                    .val())) {
                     alert("Please don't enter the wrong payment.");
                 } else {
 
@@ -789,7 +799,8 @@
                         time: time_input.val(),
                         batch_id: uniqueString,
                         cashier: cashier_input.val(),
-                        total_service_tax_value: totalServiceTaxValue
+                        total_service_tax_value: totalServiceTaxValue,
+                        pos_fee_tax: 1
                     };
 
 
@@ -822,38 +833,46 @@
             });
 
             service_qty_input.on('focus', function() {
-                $(this).css('border', '2px solid red');
+                $(this).addClass("border-red");
+                $(this).removeClass("border-black");
             });
 
             // Remove the redness when the field loses focus
             service_qty_input.on('blur', function() {
-                $(this).css('border', '');
+                $(this).removeClass("border-red");
+                $(this).addClass("border-black");
             });
             customer_name_input.on('focus', function() {
-                $(this).css('border', '2px solid red');
+                $(this).addClass("border-red");
+                $(this).removeClass("border-black");
             });
 
             // Remove the redness when the field loses focus
             customer_name_input.on('blur', function() {
-                $(this).css('border', '');
+                $(this).removeClass("border-red");
+                $(this).addClass("border-black");
             });
 
             discount_in_percentage_input.on('focus', function() {
-                $(this).css('border', '2px solid red');
+                $(this).addClass("border-red");
+                $(this).removeClass("border-black");
             });
 
             // Remove the redness when the field loses focus
             discount_in_percentage_input.on('blur', function() {
-                $(this).css('border', '');
+                $(this).removeClass("border-red");
+                $(this).addClass("border-black");
             });
 
             amount_received_input.on('focus', function() {
-                $(this).css('border', '2px solid red');
+                $(this).addClass("border-red");
+                $(this).removeClass("border-black");
             });
 
             // Remove the redness when the field loses focus
             amount_received_input.on('blur', function() {
-                $(this).css('border', '');
+                $(this).removeClass("border-red");
+                $(this).addClass("border-black");
             });
             bill_reprint_button.on("click", function(e) {
                 e.preventDefault();

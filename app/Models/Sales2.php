@@ -24,8 +24,9 @@ class Sales2 extends Model
         'qr_code',
         'fbr_inv_number',
         'qr_code_image',
-        'total_service_tax_value'
+        'total_service_tax_value',
 
+        'pos_fee_tax'
 
 
 

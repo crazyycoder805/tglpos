@@ -8,7 +8,7 @@
 
     <link rel="icon" href="{{ asset('assets/images/mc/favicon.ico') }}">
 
-    <title>TGH - Dashboard</title>
+    <title>TGL - Dashboard</title>
 
     <link rel="stylesheet" href="{{ asset('assets/src/css/vendors_css.css') }}">
 

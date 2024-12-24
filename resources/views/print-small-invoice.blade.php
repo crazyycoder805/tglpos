@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thermal Invoice</title>
     <style>
+      
+
         /* General Settings */
         body {
             width: 80mm;
@@ -15,6 +17,22 @@
             font-size: 12px;
             color: #333;
             background: #f7f7f7;
+        }
+
+        @font-face {
+            font-family: 'Arenski';
+            src: url('/assets/fonts/arenskiregular.ttf') format('truetype');
+            font-weight: normal;
+            /* Adjust the weight accordingly */
+            font-style: normal;
+            /* Set to normal or italic if desired */
+        }
+
+        .arenski {
+            font-family: 'Arenski';
+            font-weight: bold;
+            font-size: 25px !important
+                /* Example: Apply bold if needed */
         }
 
         .invoice {
@@ -169,18 +187,19 @@
 
 <body>
     <button class="ignore" id="downloadPdfButton">Download PDF</button>
+    <button class="ignore" id="printButton">Print</button>
 
     <div class="invoice">
         <!-- Header -->
         <div class="header">
-            <img src="logo.png" alt="Logo">
-            <h1>The Grooming Lounge</h1>
+            {{-- <img src="{{ asset('assets/images/logo-2.png') }}" alt="Logo" style="width: 500px; height: auto;"> --}}
+            <h1 class="arenski">The Grooming Lounge</h1>
             <p>Suite 1 & 2, Al-Abraj Plaza, Al Abraj Center, Islamabad, Pakistan</p>
             <p>Tel: +92 51 8377338</p>
             <br>
             <p>url: www.thegroominglounge.pk, Email: info@thegroominglounge.pk</p>
             <h2>Cash Memo</h2>
-            <h2 style="text-decoration: underline">Mr. Khalil</h2>
+            <h2 style="text-decoration: underline">{{ $allSales2->customer_name }}</h2>
         </div>
 
         <!-- Invoice Details -->
@@ -193,8 +212,7 @@
                     <td>{{ $allSales2->date }}</td>
                 </tr>
                 <tr>
-                    <td class="label">Customer:</td>
-                    <td>{{ $allSales2->customer_name }}</td>
+
                     <td class="label">Cashier:</td>
                     <td>{{ $allSales2->cashier }}</td>
                 </tr>
@@ -237,6 +255,10 @@
                 <tr>
                     <td>Discount Amount (%):</td>
                     <td>{{ $allSales2->discount_in_percentage }}</td>
+                </tr>
+                <tr>
+                    <td>POS FEE:</td>
+                    <td>{{ $allSales2->pos_fee_tax }}</td>
                 </tr>
                 <tr>
                     <td class="total">Total Payable Amount:</td>
@@ -306,6 +328,12 @@
                 .catch(error => {
                     console.error('Error generating PDF:', error);
                 });
+
+
+        });
+        document.getElementById("printButton").addEventListener("click", function() {
+            // Trigger the print dialog
+            window.print();
         });
     </script>
 </body>
