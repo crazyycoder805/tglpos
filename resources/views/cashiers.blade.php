@@ -876,7 +876,7 @@
                         // Hide the loading indicator
                         loadingIndicator.remove();
                         bill_close_button.prop("disabled", false);
-
+                        console.log(response);
                         // Notify the user of successful submission
                         // alert("Data saved successfully. Redirecting to the invoice...");
                         location.href = "/cashiers";

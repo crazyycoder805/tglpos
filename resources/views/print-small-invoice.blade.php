@@ -232,7 +232,7 @@
                         <tr>
                             <td>{{ $singleSales1->service_description }}</td>
                             <td>{{ $singleSales1->service_qty }}</td>
-                            <td style="font-weight: bolder">{{ $singleSales1->service_sale_price }}</td>
+                            <td style="font-weight: bolder">{{ $singleSales1->service_total }}</td>
                         </tr>
                     @endforeach
                 </tbody>

@@ -127,15 +127,15 @@ class Cashiers extends Controller
                 "Quantity" => (float) $item->service_qty ?? 1.0,
                 "PCTCode" => $item->pct_code ?? "11001010", // Default PCTCode
                 "TaxRate" => (float) $item->service_tax ?? 0.0,
-                "SaleValue" => (float) $item->service_sale_price ?? 0.0,
+                "SaleValue" => (float) $item->service_total ?? 0.0,
                 "TotalAmount" => (float) $item->service_after_tax_total ?? 0.0,
                 "TaxCharged" => (float) $item->service_tax_value ?? 0.0,
-                "Discount" => (float) $item->discount_in_percentage ?? 0.0,
                 "FurtherTax" => (float) $item->further_tax ?? 0.0,
                 "InvoiceType" => $item->invoice_type ?? 1,
                 "RefUSIN" => $item->ref_usin ?? null,
             ];
         });
+        $discountAmount = ($validated['discount_in_percentage'] / 100) * $validated['total_amount_after_tax'];
 
         $payload = [
             "InvoiceNumber" => "",
@@ -145,12 +145,14 @@ class Cashiers extends Controller
             "BuyerName" => $validated['customer_name'] ?? 'Unknown',
             "BuyerPhoneNumber" => "0000-0000000",
             "items" => $items, // Use the dynamically prepared items array
-            "TotalBillAmount" => (float) $validated['total_amount_after_tax'] + (float) $validated['pos_fee_tax'] ?? 1.0,
+            "TotalBillAmount" => (float) $validated['discounted_final_amount'] ?? 1.0,
             "TotalQuantity" => (float) $validated['total_qty'] ?? 1.0,
             "TotalSaleValue" => (float) $validated['total_amount_before_tax'] ?? 1.0,
-            "TotalTaxCharged" => (float) $validated['pos_fee_tax'] ?? 1.0,
+            "TotalTaxCharged" => (float) Sales1::where(['batch_id' => $req->batch_id])->sum('service_tax_value') ?? 1.0,
             "PaymentMode" => 2,
             "InvoiceType" => 1,
+            "Discount" => (float) $discountAmount ?? 1.0,
+
             "FurtherTax" => (float) $validated['pos_fee_tax']
         ];
 
@@ -180,6 +182,7 @@ class Cashiers extends Controller
             'message' => 'Data saved and sent to external API successfully!',
             'data' => $sale2,
             'api_response' => $apiResponse,
+
         ], 200);
     }
 
