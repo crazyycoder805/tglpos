@@ -582,47 +582,67 @@
             service_tax_input.on('input', calculateTotal); // Listen for input events on tax (user input)
 
             // Next Qty input focus to tax input focus
+            // Event handler for service quantity input keypress
             service_qty_input.on('keypress', function(event) {
-                if (event.which === 13) { // 13 is the Enter key
 
+                if (event.which === 13) { // Enter key
                     event.preventDefault(); // Prevent default action
-                    if (uniqueString == "") {
+
+                    // Ensure a unique batch ID is generated
+                    if (!uniqueString) {
                         uniqueString = generateUniqueString(10);
                     }
-                    console.log(serviceTaxValue);
+
                     // Collect the form data
-                    var data = {
+                    const data = {
                         date: date_input.val(),
                         time: time_input.val(),
                         service_barcode: service_barcode_input.val(),
                         service_description: service_description_input.val(),
-                        service_sale_price: parseFloat(service_sale_price_input.val()),
-                        service_qty: parseInt(service_qty_input.val()),
-                        service_total: parseFloat(service_total_input.val()),
-                        service_after_tax_total: parseFloat(service_after_tax_total_input.val()),
-                        service_tax: parseFloat(service_tax_input.val()),
+                        service_sale_price: parseFloat(service_sale_price_input.val()) || 0,
+                        service_qty: parseInt(service_qty_input.val()) || 0,
+                        service_total: parseFloat(service_total_input.val()) || 0,
+                        service_after_tax_total: parseFloat(service_after_tax_total_input.val()) || 0,
+                        service_tax: parseFloat(service_tax_input.val()) || 0,
                         service_inv_input: service_inv_input.val(),
                         batch_id: uniqueString,
                         service_tax_value: serviceTaxValue
                     };
 
+                    // Validate required fields
+                    if (!data.service_barcode || !data.service_description || !data.service_qty || !data
+                        .service_sale_price) {
+                        alert("Please fill out all required fields before submitting.");
+                        return;
+                    }
+
                     // Update the global totals
                     totalAfterTaxAmount += data.service_after_tax_total;
                     totalBeforeTaxAmount += data.service_total;
-
                     totalQuantity += data.service_qty;
+
+                    // Show a loading indicator while processing
+                    const loadingIndicator = $('<div class="loading">Processing, please wait...</div>');
+                    $('body').append(loadingIndicator);
+                    service_qty_input.prop("disabled", true);
 
                     // Send the AJAX POST request
                     $.ajax({
-                        url: '/cashiers/addDataSales1', // The route with action explicitly specified
-                        type: 'POST', // HTTP method
-                        data: data, // Data to send
+                        url: '/cashiers/addDataSales1', // Backend route
+                        type: 'POST',
+                        data: data,
                         success: function(response) {
-                            // Handle the response from the server (e.g., show a success message)
+                            // Remove the loading indicator
+                            loadingIndicator.remove();
+                            service_qty_input.prop("disabled", false);
+
+                            // Notify the user of success
+                            // alert("Data saved successfully.");
 
                             // Create a new row and append it to the table body
-                            var newRow = `<tr data-id="${response.lastInsertedRowSales1.id}">
-                                            <td style="color: black !important">#</td> <!-- Replace with dynamic ID if needed -->
+                            const newRow = `
+                                        <tr data-id="${response.lastInsertedRowSales1.id}">
+                                            <td style="color: black !important">#</td>
                                             <td style="color: black !important">
                                                 <button id="deleteSales1" data-id="${response.lastInsertedRowSales1.id}" class="btn delete-row btn-sm btn-danger">Delete</button>
                                             </td>
@@ -630,10 +650,10 @@
                                             <td style="color: black !important">${data.service_barcode}</td>
                                             <td style="color: black !important">${data.service_description}</td>
                                             <td style="color: black !important">${data.service_qty}</td>
-                                            <td style="color: black !important">${data.service_sale_price}</td>
-                                            <td style="color: black !important">${data.service_total}</td>
-                                            <td style="color: black !important">${data.service_tax}</td>
-                                            <td style="color: black !important">${data.service_after_tax_total}</td>
+                                            <td style="color: black !important">${data.service_sale_price.toFixed(2)}</td>
+                                            <td style="color: black !important">${data.service_total.toFixed(2)}</td>
+                                            <td style="color: black !important">${data.service_tax.toFixed(2)}</td>
+                                            <td style="color: black !important">${data.service_after_tax_total.toFixed(2)}</td>
                                         </tr>`;
 
                             // Append the new row to the table body
@@ -642,12 +662,22 @@
                             // Update the displayed totals
                             updateTotalsDisplay();
 
+                            // Reset the input fields
                             resetFields();
                         },
                         error: function(xhr, status, error) {
-                            // Handle any errors that occur during the request
+                            // Remove the loading indicator
+                            loadingIndicator.remove();
+                            service_qty_input.prop("disabled", false);
+
+                            // Log the error for debugging
                             console.error("Error occurred:", xhr);
-                            alert("An error occurred while saving the data.");
+
+                            // Notify the user of the error
+                            alert("An error occurred while saving the data. Please try again.");
+                        },
+                        complete: function() {
+                            console.log("Request completed.");
                         }
                     });
                 }
@@ -659,43 +689,65 @@
 
 
 
-            // When deleting a row
-            $(document).on('click', '.delete-row', function() {
-                var rowId = $(this).data('id'); // Get the row ID from the button's data-id attribute
 
-                // Get the values from the row to subtract from totals
-                var row = $(this).closest('tr');
-                var qty = parseInt(row.find('td').eq(5).text());
-                var total = parseFloat(row.find('td').eq(9).text());
-                var totalBeforeTax = parseFloat(row.find('td').eq(7).text());
+            // When deleting a row
+            // Event handler for deleting a row
+            $(document).on('click', '.delete-row', function() {
+                const rowId = $(this).data('id'); // Get the row ID from the button's data-id attribute
+
+                // Get the row and its values
+                const row = $(this).closest('tr');
+                const qty = parseInt(row.find('td').eq(5).text()) || 0;
+                const total = parseFloat(row.find('td').eq(9).text()) || 0;
+                const totalBeforeTax = parseFloat(row.find('td').eq(7).text()) || 0;
+
+                // Confirm deletion with the user
+                if (!confirm("Are you sure you want to delete this row?")) {
+                    return; // Stop execution if user cancels
+                }
+
+                // Show a loading indicator while processing
+                const loadingIndicator = $(
+                    '<div class="loading">Processing deletion, please wait...</div>');
+                $('body').append(loadingIndicator);
 
                 // Update the global totals
                 totalAfterTaxAmount -= total;
                 totalBeforeTaxAmount -= totalBeforeTax;
-
                 totalQuantity -= qty;
 
                 // Send AJAX request to delete the row from the backend
                 $.ajax({
-                    url: '/cashiers/deleteDataSales1', // The route with action explicitly specified
-                    type: 'POST', // HTTP method
+                    url: '/cashiers/deleteDataSales1', // Backend route
+                    type: 'POST',
                     data: {
                         id: rowId
-                    }, // Data to send (ID of the row to delete)
+                    },
                     success: function(response) {
                         // On success, remove the row from the table
                         $('tr[data-id="' + rowId + '"]').remove();
 
                         // Update the displayed totals
                         updateTotalsDisplay();
+
+                        // Notify the user of successful deletion
+                        alert("Row deleted successfully.");
                     },
                     error: function(xhr, status, error) {
-                        // Handle any errors during the delete request
+                        // Log the error details for debugging
                         console.error("Error occurred:", xhr);
-                        alert("An error occurred while deleting the row.");
+
+                        // Show a user-friendly error message
+                        alert("An error occurred while deleting the row. Please try again.");
+                    },
+                    complete: function() {
+                        // Remove the loading indicator after request completes
+                        loadingIndicator.remove();
+                        console.log("Row deletion request completed");
                     }
                 });
             });
+
 
             // Event listener for Total Amount Before Tax input
             total_amount_before_tax_input.on('input', function() {
@@ -776,56 +828,81 @@
                 }
             });
 
+            // Event handler for the close button
             bill_close_button.on('click', function(event) {
-                event.preventDefault(); // Prevent default action
+                event.preventDefault(); // Prevent default form submission
 
-                if (parseFloat(amount_received_input.val()) < parseFloat(discounted_final_amount_input
-                    .val())) {
-                    alert("Please don't enter the wrong payment.");
-                } else {
+                // Input validation: Check if the amount received is sufficient
+                const amountReceived = parseFloat(amount_received_input.val());
+                const discountedFinalAmount = parseFloat(discounted_final_amount_input.val());
 
-                    // Collect the form data
-                    var data = {
-                        service_inv: service_inv_input.val(),
-                        customer_name: customer_name_input.val(),
-                        total_qty: total_qty_input.val(),
-                        total_amount_before_tax: total_amount_before_tax_input.val(),
-                        total_amount_after_tax: total_amount_after_tax_input.val(),
-                        discount_in_percentage: discount_in_percentage_input.val(),
-                        discounted_final_amount: discounted_final_amount_input.val(),
-                        amount_received: amount_received_input.val(),
-                        change_return: change_return_input.val(),
-                        date: date_input.val(),
-                        time: time_input.val(),
-                        batch_id: uniqueString,
-                        cashier: cashier_input.val(),
-                        total_service_tax_value: totalServiceTaxValue,
-                        pos_fee_tax: 1
-                    };
-
-
-
-
-                    // Send the AJAX POST request
-                    $.ajax({
-                        url: '/cashiers/addDataSales2', // The route with action explicitly specified
-                        type: 'POST', // HTTP method
-                        data: data, // Data to send
-                        success: function(response) {
-                            invoiceOpen();
-                            console.log(response);
-                            location.href = "/cashiers";
-                        },
-                        error: function(xhr, status, error) {
-                            // Handle any errors that occur during the request
-                            console.error("Error occurred:", xhr);
-                            alert("An error occurred while saving the data.");
-                        }
-                    });
+                if (amountReceived < discountedFinalAmount) {
+                    alert(
+                        "Insufficient payment. Please ensure the received amount covers the discounted total."
+                    );
+                    return; // Stop further execution if validation fails
                 }
 
+                // Show a loading indicator while processing
+                const loadingIndicator = $('<div class="loading">Processing, please wait...</div>');
+                $('body').append(loadingIndicator);
+                bill_close_button.prop("disabled", true);
 
+                // Prepare data for the request
+                const requestData = {
+                    service_inv: service_inv_input.val(),
+                    customer_name: customer_name_input.val(),
+                    total_qty: total_qty_input.val(),
+                    total_amount_before_tax: total_amount_before_tax_input.val(),
+                    total_amount_after_tax: total_amount_after_tax_input.val(),
+                    discount_in_percentage: discount_in_percentage_input.val(),
+                    discounted_final_amount: discounted_final_amount_input.val(),
+                    amount_received: amountReceived,
+                    change_return: change_return_input.val(),
+                    date: date_input.val(),
+                    time: time_input.val(),
+                    batch_id: uniqueString,
+                    cashier: cashier_input.val(),
+                    total_service_tax_value: totalServiceTaxValue,
+                    pos_fee_tax: 1
+                };
+
+                // Send the AJAX POST request
+                $.ajax({
+                    url: '/cashiers/addDataSales2',
+                    type: 'POST',
+                    data: requestData,
+                    success: function(response) {
+                        // Hide the loading indicator
+                        loadingIndicator.remove();
+                        bill_close_button.prop("disabled", false);
+
+                        // Notify the user of successful submission
+                        // alert("Data saved successfully. Redirecting to the invoice...");
+                        location.href = "/cashiers";
+                        // Open the invoice or perform the desired action
+                        invoiceOpen();
+                    },
+                    error: function(xhr, status, error) {
+                        // Hide the loading indicator
+                        loadingIndicator.remove();
+                        bill_close_button.prop("disabled", false);
+
+                        // Log the error details for debugging
+                        console.error("Error occurred:", xhr);
+
+                        // Provide a user-friendly error message
+                        alert(
+                            "An error occurred while saving the data. Please try again later."
+                        );
+                    },
+                    complete: function() {
+                        // Optional: Additional cleanup after request completes
+                        console.log("Request completed");
+                    }
+                });
             });
+
 
             bill_clear_button.on('click', function(event) {
                 clearBill();

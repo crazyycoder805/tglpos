@@ -6,11 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thermal Invoice</title>
     <style>
-      
-
         /* General Settings */
         body {
-            width: 80mm;
+            width: 76mm;
             margin: 0;
             padding: 0;
             font-family: 'Arial', sans-serif;
@@ -224,16 +222,16 @@
             <table>
                 <thead>
                     <tr style="border-bottom: 1px solid black">
-                        <th>Code</th>
                         <th>Service Name</th>
+                        <th>Qty</th>
                         <th>Price</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($allSales1 as $singleSales1)
                         <tr>
-                            <td>{{ $singleSales1->service_barcode }}</td>
                             <td>{{ $singleSales1->service_description }}</td>
+                            <td>{{ $singleSales1->service_qty }}</td>
                             <td style="font-weight: bolder">{{ $singleSales1->service_sale_price }}</td>
                         </tr>
                     @endforeach
@@ -276,7 +274,7 @@
         </div>
         <br>
         <div>
-            <b>Tax # : {{ $allSales2->fbr_inv_number }}</b>
+            <b>FBR Invoice # : {{ $allSales2->fbr_inv_number }}</b>
             {{-- <p>All Prices inclusive of GST</p> --}}
         </div>
 
