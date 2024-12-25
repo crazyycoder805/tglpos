@@ -1,0 +1,4 @@
+
+FBR_API_URL=https://esp.fbr.gov.pk:8244/FBR/v1/api/Live/PostData
+FBR_API_KEY="1298b5eb-b252-3d97-8622-a4a69d5bf818"
+POS_ID=815373
