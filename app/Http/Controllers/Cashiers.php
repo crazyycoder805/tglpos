@@ -157,9 +157,10 @@ class Cashiers extends Controller
         ];
 
         $client = new Client();
-        $response = $client->post(env('FBR_API_URL'), [
+        $response = $client->post(env('FBR_API_URL')
+        , [
             'headers' => [
-                'Authorization' => 'Bearer ' . env('FBR_API_KEY'),
+                // 'Authorization' => 'Bearer ' . env('FBR_API_KEY'),
                 'Content-Type' => 'application/json',
             ],
             'json' => $payload,

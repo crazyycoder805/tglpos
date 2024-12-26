@@ -193,7 +193,7 @@
             {{-- <img src="{{ asset('assets/images/logo-2.png') }}" alt="Logo" style="width: 500px; height: auto;"> --}}
             <h1 class="arenski">The Grooming Lounge</h1>
             <p>Suite 1 & 2, Al-Abraj Plaza, Al Abraj Center, Islamabad, Pakistan</p>
-            <p>Tel: +92 51 8377338</p>
+            <p>Tel: 051 - 8737334 - 336</p>
             <br>
             <p>url: www.thegroominglounge.pk, Email: info@thegroominglounge.pk</p>
             <h2>Cash Memo</h2>
@@ -287,8 +287,8 @@
         </div>
 
         <div class="footer">
-            <p>Software Dev By ShahForge IT</p>
-            <b>PH/WA: +92 - 349 - 5676761 / +92 - 312 - 5571283</b>
+            <p>Software Dev By The Grooming Lounge</p>
+            <b>PH/WA: 051 - 8737334 - 336</b>
         </div>
         <h6 style="text-align: center">Thanks for Coming</h6>
     </div>

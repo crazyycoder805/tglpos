@@ -384,6 +384,7 @@
             let uniqueString = "";
             let serviceTaxValue = "";
             let totalServiceTaxValue = "";
+            let tax = {{ $allSettings->tax }};
 
             // All Functions
             function generateUniqueString(length = 8) {
@@ -879,7 +880,7 @@
                         console.log(response);
                         // Notify the user of successful submission
                         // alert("Data saved successfully. Redirecting to the invoice...");
-                        location.href = "/cashiers";
+                        //location.href = "/cashiers";
                         // Open the invoice or perform the desired action
                         invoiceOpen();
                     },
